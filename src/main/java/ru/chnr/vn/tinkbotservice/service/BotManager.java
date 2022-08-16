@@ -21,4 +21,12 @@ public class BotManager {
         return newBot.getId();
     }
 
+    public boolean deleteBot(long id){
+        if (!bots.containsKey(id)) return false;
+        bots.remove(id);
+        return true;
+    }
+
+
+
 }

@@ -16,13 +16,23 @@ public class BotServiceImpl extends BotClientGrpc.BotClientImplBase{
 
     @Override
     public void createBot(Token token, StreamObserver<BotID> observer){
-        observer.onNext(BotID
+        BotID response = BotID
                 .newBuilder()
                 .setBotID(
-                bots.createBot(token.getToken())
-                ).build()
-        );
+                        bots.createBot(token.getToken())
+                ).build();
 
+        observer.onNext(response);
+        observer.onCompleted();
+    }
+
+    @Override
+    public void deleteBot(BotID id, StreamObserver<Success> observer){
+        observer.onNext(Success
+                .newBuilder()
+                .setIsDeleted(bots.deleteBot(id.getBotID()))
+                .build()
+        );
         observer.onCompleted();
     }
 }
