@@ -9,14 +9,14 @@ service BotClient{
   rpc DeleteBot(BotID) returns (Success);
 }
 
-message Token{
+message Token {
   int64 token = 1;
 }
 
-message BotID{
+message BotID {
   int64 BotID = 1;
 }
 
-message Success{
+message Success {
   bool isDeleted = 1;
 }
