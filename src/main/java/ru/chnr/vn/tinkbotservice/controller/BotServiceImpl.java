@@ -22,6 +22,7 @@ public class BotServiceImpl extends BotClientGrpc.BotClientImplBase{
                 bots.createBot(token.getToken())
                 ).build()
         );
+
         observer.onCompleted();
     }
 }
