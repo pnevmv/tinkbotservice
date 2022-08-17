@@ -15,6 +15,7 @@ import java.util.Date;
 
 import ru.tinkoff.piapi.contract.v1.TradingDay;
 import ru.tinkoff.piapi.core.InvestApi;
+import ru.tinkoff.piapi.core.models.Portfolio;
 
 /**
  * Class for connection with api
@@ -42,16 +43,13 @@ public class Connector{
     public void initializeStreams(DataStreamProcessor dataProc) {
         try {
             candleStream.initialize(dataProc);
-        } catch (OutNumberOfReconnectAttemptsException exception) {
-            exception.printStackTrace();
-        } catch (CompanyNotFoundException exception) {
+        } catch (OutNumberOfReconnectAttemptsException | CompanyNotFoundException exception) {
             exception.printStackTrace();
         }
     }
 
     /**
      * Converts from Timestamp to Date
-     * @param timestamp
      * @return converted data
      */
     public Date timestampToDate(Timestamp timestamp) {
@@ -61,7 +59,7 @@ public class Connector{
     /**
      * Availability check
      * @param name of exchange
-     * @return
+     * @return is trading day
      */
     public boolean isAvailableNow(String name) {
         var tradingSchedules =
@@ -117,7 +115,7 @@ public class Connector{
     /**
      * Existing check
      * @param figi - id of instrument
-     * @return
+     * @return value of existing
      */
     public boolean isExistByFigi(String figi) {
         var smt = api.getInstrumentsService().getInstrumentByFigiSync(figi);
