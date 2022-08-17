@@ -5,15 +5,16 @@ import ru.chnr.vn.tinkbotservice.domain.Bot;
 import ru.chnr.vn.tinkbotservice.exceptions.CompanyNotFoundException;
 import ru.chnr.vn.tinkbotservice.exceptions.OutNumberOfReconnectAttemptsException;
 import ru.chnr.vn.tinkbotservice.processor.DataStreamProcessor;
-import ru.tinkoff.piapi.contract.v1.TradingDay;
-import ru.tinkoff.piapi.core.InvestApi;
-import ru.tinkoff.piapi.core.models.Portfolio;
+
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+
+import ru.tinkoff.piapi.contract.v1.TradingDay;
+import ru.tinkoff.piapi.core.InvestApi;
 
 /**
  * Class for connection with api

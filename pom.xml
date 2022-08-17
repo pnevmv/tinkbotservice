@@ -23,23 +23,43 @@
         <grpc.version>1.48.1</grpc.version>
     </properties>
 
-    <dependencies>
 
+    <!-- to solve  conflict between tinkoff piapi (grpc core v. 1.44.2) and grpc-springboot (1.42.2) -->
+    <!-- if not working write here 1.44.2-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-services</artifactId>
+                <version>1.42.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-core</artifactId>
+                <version>1.42.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+
+    <dependencies>
         <dependency>
             <groupId>ru.tinkoff.piapi</groupId>
-            <artifactId>java-sdk</artifactId>
+            <artifactId>java-sdk-core</artifactId>
             <version>1.0.11.1</version>
-            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0-alpha7</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
         <dependency>
