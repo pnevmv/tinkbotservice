@@ -2,7 +2,14 @@ package ru.chnr.vn.tinkbotservice.domain;
 
 import ru.chnr.vn.tinkbotservice.connection.CandleSource;
 import ru.chnr.vn.tinkbotservice.connection.CandleStream;
+import ru.chnr.vn.tinkbotservice.connection.Connector;
+import ru.chnr.vn.tinkbotservice.connection.TradeStream;
+import ru.chnr.vn.tinkbotservice.exceptions.AccountNotFoundException;
 import ru.chnr.vn.tinkbotservice.exceptions.CompanyNotFoundException;
+import ru.tinkoff.piapi.contract.v1.Account;
+import ru.tinkoff.piapi.contract.v1.AccountType;
+import ru.tinkoff.piapi.core.InvestApi;
+import ru.tinkoff.piapi.core.exception.ApiRuntimeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,12 +21,18 @@ import java.util.List;
  */
 //@Entity
 public class Bot {
+
    // @GeneratedValue
    // @Id
     long id;
-    long token;
+    String token;
 
+    private final Connector connector;
     private final HashMap<String, Company> companies;
+    private final TradeStream tradeStream;
+    private final CandleStream candleStream;
+    private final InvestApi api;
+    private final String accountId;
 
     //while dont know how to work with Entity
     static long curID = 0;
@@ -27,18 +40,82 @@ public class Bot {
         curID++;
     }
 
-    public Bot(long token){
+    public Bot(String token){
         this.token = token;
+        this.api = initializeApi();
+        this.accountId = chooseAccount(api);
         this.id = curID;
         this.companies = new HashMap<>();
+        this.tradeStream = new TradeStream(api, accountId, this);
+        this.candleStream = new CandleStream(api, this);
+        this.connector = new Connector(api, accountId, tradeStream, candleStream);
     }
 
     public long getId() {
         return id;
     }
 
-    public long getToken() {
+    public String getToken() {
         return token;
+    }
+
+
+    private InvestApi initializeApi() {
+        InvestApi api;
+
+        while (true) {
+            try {
+                if (token.isEmpty()) throw new IllegalArgumentException();
+
+                api = InvestApi.create(token);
+                api.getUserService().getAccountsSync();
+                break;
+            } catch (ApiRuntimeException | IllegalArgumentException exception) {
+                exception.printStackTrace();
+            }
+        }
+
+        return api;
+    }
+
+    private static String chooseAccount(InvestApi api) {
+
+        List<Account> accounts = api.getUserService().getAccountsSync();
+        List<Account> tinkoffAccounts = new ArrayList<>();
+        String accountId = "";
+        int number = 1;
+
+        try {
+            for (Account account: accounts) {
+                if (account.getType() == AccountType.ACCOUNT_TYPE_TINKOFF) {
+                    tinkoffAccounts.add(account);
+                    System.out.println("Account #" + number++
+                            + "\nName: " + account.getName()
+                            + "\nId: " + account.getId());
+                }
+            }
+
+            if (tinkoffAccounts.isEmpty()) throw new AccountNotFoundException("Accounts not found");
+
+            while (true) {
+                try {
+                    accountId = tinkoffAccounts.get(0).getId();
+                    if (accountId.equals("")) throw new AccountNotFoundException("Accounts not found");
+                    break;
+                } catch (IllegalArgumentException exception) {
+                    exception.printStackTrace();
+                }
+
+            }
+        } catch (AccountNotFoundException exception) {
+            exception.printStackTrace();
+        }
+        System.out.println("Success");
+        return accountId;
+    }
+
+    public Connector getConnector() {
+        return this.connector;
     }
 
     /**

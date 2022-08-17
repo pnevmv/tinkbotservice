@@ -26,12 +26,49 @@ public class BotServiceImpl extends BotClientGrpc.BotClientImplBase{
     }
 
     @Override
-    public void deleteBot(BotID id, StreamObserver<Success> observer){
-        observer.onNext(Success
+    public void deleteBot(BotID id, StreamObserver<Result> observer){
+        observer.onNext(Result
                 .newBuilder()
-                .setIsDeleted(bots.deleteBot(id.getBotID()))
+                .setValue(
+                        bots.deleteBot(id.getBotID()))
                 .build()
         );
+        observer.onCompleted();
+    }
+
+    @Override
+    public  void addCompany(CompanyInfo companyInfo, StreamObserver<Result> observer) {
+        observer.onNext(Result
+                .newBuilder()
+                .setValue(
+                        bots.addCompany(companyInfo.getBotID(), companyInfo))
+                .build()
+        );
+
+        observer.onCompleted();
+    }
+
+    @Override
+    public  void changeCompany(CompanyInfo companyInfo, StreamObserver<Result> observer) {
+        observer.onNext(Result
+                .newBuilder()
+                .setValue(
+                        bots.changeCompany(companyInfo.getBotID(), companyInfo))
+                .build()
+        );
+
+        observer.onCompleted();
+    }
+
+    @Override
+    public  void deleteCompany(CompanyInfo companyInfo, StreamObserver<Result> observer) {
+        observer.onNext(Result
+                .newBuilder()
+                .setValue(
+                        bots.deleteCompany(companyInfo.getBotID(), companyInfo))
+                .build()
+        );
+
         observer.onCompleted();
     }
 }

@@ -6,17 +6,33 @@ option java_multiple_files = true;
 
 service BotClient{
   rpc CreateBot(Token) returns (BotID);
-  rpc DeleteBot(BotID) returns (Success);
+  rpc DeleteBot(BotID) returns (Result);
+  rpc ChangeCompany(CompanyInfo) returns (Result);
+  rpc AddCompany(CompanyInfo) returns (Result);
+  rpc DeleteCompany(CompanyInfo) returns (Result);
 }
 
 message Token {
-  int64 token = 1;
+  string token = 1;
+}
+
+message CompanyInfo {
+  int64 BotID = 1;
+  string figi = 2;
+  double moneyToTrade = 3;
+  double lossPercent = 4;
+  double takeProfit = 5;
+  int32 lot = 6;
+}
+
+message Schedule {
+
 }
 
 message BotID {
   int64 BotID = 1;
 }
 
-message Success {
-  bool isDeleted = 1;
+message Result {
+  bool value = 1;
 }

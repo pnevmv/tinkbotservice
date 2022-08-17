@@ -21,18 +21,16 @@ import ru.tinkoff.piapi.core.models.Portfolio;
  * Class for connection with api
  * (streams initialisation, verifications, etc.)
  */
-public class Connector{
+public class Connector {
     private final TradeStream tradeStream;
     private final CandleStream candleStream;
     private final InvestApi api;
-    private final Bot bot;
     private final String accountId;
 
-    public Connector(InvestApi api, Bot bot, String accountId) {
-        this.tradeStream = new TradeStream(api, accountId, bot);
-        this.candleStream = new CandleStream(api, bot);
+    public Connector(InvestApi api, String accountId, TradeStream tradeStream, CandleStream candleStream) {
+        this.tradeStream = tradeStream;
+        this.candleStream = candleStream;
         this.api = api;
-        this.bot = bot;
         this.accountId = accountId;
     }
 
@@ -132,10 +130,6 @@ public class Connector{
 
     public int getLotByFigi(String figi) {
         return api.getInstrumentsService().getInstrumentByFigiSync(figi).getLot();
-    }
-
-    public Bot getCompanies() {
-        return bot;
     }
 
     public String getAccountId() {

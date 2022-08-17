@@ -20,14 +20,12 @@ import java.math.RoundingMode;
 
 public class Trader {
     private final TradeStream tradeStream;
-    private final Bot bot;
     private final InvestApi api;
 
 
     public Trader(Connector connector, InvestApi api){
         this.tradeStream = connector.getTradeStream();
         this.api = api;
-        this.bot = connector.getCompanies();
     }
 
     /**
